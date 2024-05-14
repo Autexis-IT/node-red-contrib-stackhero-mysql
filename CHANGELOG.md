@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+- 🔐 Add new ssl options for securing connections with certificates
+
+
 ## 1.0.5 (2021-01-25)
 
 - 🐞 Fix an issue where msg.payload wasn't checked well (see #3)

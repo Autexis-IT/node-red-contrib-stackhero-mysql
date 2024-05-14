@@ -13,6 +13,25 @@
     <label for="node-config-input-tls" style="width:auto !important;"> Encrypt connection to database</label>
   </div>
   <div class="form-row">
+    <label for="node-config-input-rejectUnauthorized"></label>
+    <input type="checkbox" id="node-config-input-rejectUnauthorized"
+           style="display:inline-block; width:auto; vertical-align:top;">
+    <label for="node-config-input-rejectUnauthorized" style="width:auto !important;"> Verify certificate
+      (recommended)</label>
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-caCertificate"><i class="fa fa-certificate"></i> CA-Cert.</label>
+    <input type="text" id="node-config-input-caCertificate">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-cert"><i class="fa fa-certificate"></i> Cert</label>
+    <input type="text" id="node-config-input-cert">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-key"><i class="fa fa-key"></i> Key</label>
+    <input type="text" id="node-config-input-key">
+  </div>
+  <div class="form-row">
     <label for="node-config-input-user"><i class="fa fa-user"></i> User</label>
     <input type="text" id="node-config-input-user">
   </div>
@@ -49,6 +68,22 @@
         value: true,
         required: true
       },
+      rejectUnauthorized: {
+        value: true,
+        required: true
+      },
+      caCertificate: {
+        value: "",
+        required: false
+      },
+      cert: {
+        value: "",
+        required: false
+      },
+      key: {
+        value: "",
+        required: false
+      },
       database: {
         value: "",
         required: true
@@ -65,6 +100,21 @@
     // Note: label (and probably labelStyle) have to be a classical function (not an arrow function)
     label: function () {
       return this.name || this.database
+    },
+    oneditprepare: function () {
+      function toggleTlsFields(show) {
+        $("#node-config-input-caCertificate").closest('div').toggle(show);
+        $("#node-config-input-cert").closest('div').toggle(show);
+        $("#node-config-input-key").closest('div').toggle(show);
+        $("#node-config-input-rejectUnauthorized").closest('div').toggle(show);
+      }
+
+      const tlsCheckbox = $("#node-config-input-tls");
+      tlsCheckbox.on('change', function () {
+        toggleTlsFields(this.checked);
+      });
+
+      toggleTlsFields(tlsCheckbox.prop('checked'));
     }
   });
 </script>

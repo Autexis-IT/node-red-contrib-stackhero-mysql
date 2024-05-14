@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 module.exports = (RED) => {
   'use strict';
 
@@ -39,6 +41,38 @@ module.exports = (RED) => {
         return;
       }
 
+      let sslOptions;
+      if (config.tls) {
+        sslOptions = {};
+        if (config.caCertificate) {
+          try {
+            sslOptions.ca = fs.readFileSync(config.caCertificate);
+          } catch (err) {
+            this.error(`Unable to read CA-Certificate: ${err}`);
+            return;
+          }
+        }
+        if (config.cert) {
+          try {
+            sslOptions.ca = fs.readFileSync(config.cert)
+          } catch (err) {
+            this.error(`Unable to read cert: ${err}`);
+            return;
+          }
+        }
+        if (config.key) {
+          try {
+            sslOptions.ca = fs.readFileSync(config.key)
+          } catch (err) {
+            this.error(`Unable to read key: ${err}`);
+            return;
+          }
+        }
+        sslOptions.rejectUnauthorized = config.rejectUnauthorized;
+      } else {
+        sslOptions = false;
+      }
+
       // Note: the connection is not done here
       this.pool = mysql.createPool({
         host: config.host,
@@ -50,7 +84,7 @@ module.exports = (RED) => {
         connectionLimit: 5,
         queueLimit: 0,
         connectTimeout: 1000,
-        ssl: config.tls ? {} : false,
+        ssl: sslOptions,
 
         // See https://www.npmjs.com/package/mysql#custom-format
         queryFormat: (query, values) => {
